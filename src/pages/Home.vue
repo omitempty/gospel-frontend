@@ -45,6 +45,7 @@ export default {
   height: 80%;
   width: 80%;
   display: flex;
+  background: #fdfdfd;
   .sider {
     width: 100px;
     height: 100%;

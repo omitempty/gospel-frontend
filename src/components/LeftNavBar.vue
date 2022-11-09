@@ -21,29 +21,15 @@
           />
         </el-tooltip>
       </div>
-      <!--           导航栏区-->
+      <!--  导航栏区-->
       <div class="barArea">
-        <!--               文字导航栏-->
-        <!-- <transition
-          name="animate__animated animate__bounce"
-          enter-active-class="animate__fadeInUp"
-          leave-active-class="animate__zoomOut"
-          appear
-        >
-          <div v-show="flagOfShow" style="width: 100%; position: absolute">
-            <router-link :to="{ name: 'Home' }" active-class="active"
-              >主页</router-link
-            >
-            <router-link to="#" active-class="active">其它</router-link>
-          </div>
-        </transition> -->
         <transition
           name="animate__animated animate__bounce"
           enter-active-class="animate__fadeInUp"
           leave-active-class="animate__zoomOut"
           appear
         >
-          <!--               图标导航栏-->
+          <!-- 图标导航栏-->
           <div style="width: 100%">
             <el-tooltip
               class="item"

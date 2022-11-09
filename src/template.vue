@@ -11,8 +11,8 @@ export default {
   data() {
     return {
       loginUser: {
-        name: "null",
-        password: "null",
+        name: "",
+        password: "",
       },
     };
   },
