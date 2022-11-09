@@ -1,8 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+
 Vue.use(VueRouter);
 // 创建并暴露一个路由器
-export default new VueRouter({
+const router = new VueRouter({
   routes: [
     {
       path: "/login",
@@ -71,3 +72,23 @@ export default new VueRouter({
     // },
   ],
 });
+
+// router.beforeEach((to, from, next) => {
+//   const userIsLogin = store.state.user.userInfo;
+//   if (to.meta.requiresAuth) {
+//     if (userIsLogin) {
+//       next();
+//     } else {
+//       // alert('请先登录再进行此操作!')
+//       next({
+//         path: "/login",
+//         /** 将刚刚要去的路由path（却无权限）作为参数，方便登录成功后直接跳转到该路由 */
+//         query: { redirect: to.fullPath },
+//       });
+//     }
+//   } else {
+//     next();
+//   }
+// });
+
+export default router;

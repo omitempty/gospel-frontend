@@ -4,11 +4,11 @@
     <div class="formContainer">
       <el-form>
         <el-form-item label="Username">
-          <el-input v-model="loginUser.name" autocomplete="off" />
+          <el-input v-model="user.username" autocomplete="off" />
         </el-form-item>
         <el-form-item label="Confirm">
           <el-input
-            v-model="loginUser.password"
+            v-model="user.password"
             type="password"
             autocomplete="off"
           />
@@ -31,8 +31,8 @@ export default {
   data() {
     return {
       //看看用不用转成用户对象
-      loginUser: {
-        name: "",
+      user: {
+        username: "",
         password: "",
       },
     };
@@ -41,11 +41,11 @@ export default {
   methods: {
     //用户登录
     login() {
-      console.log(this.loginUser);
+      // console.log(this.user);
       this.$http
-        .login(this.loginUser)
+        .login(this.user)
         .then((res) => {
-          console.log(res.data);
+          this.$store.commit("login", res.data[0]);
           this.$router.push({ path: "/home" });
         })
         .catch((err) => console.log(err));
