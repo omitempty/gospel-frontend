@@ -1,19 +1,20 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <router-view />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  components: {},
+  beforeCreate() {
+    document
+      .querySelector("html")
+      .setAttribute("style", "height:100%;margin:0;padding:0;");
+    document
+      .querySelector("body")
+      .setAttribute("style", "height:100%;margin:0");
+  },
+};
 </script>
 
 <style>
