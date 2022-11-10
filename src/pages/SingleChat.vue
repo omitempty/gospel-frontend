@@ -6,6 +6,7 @@
       <div class="search">
         <input type="text" placeholder="搜索好友" />
       </div>
+      <div class="friend-list"></div>
     </div>
     <div class="showcase"></div>
   </div>
@@ -23,12 +24,11 @@ export default {
       },
     };
   },
-  created() {},
-  methods: {
-    UserLogin() {
-      console.log(this.loginUser);
-    },
+  created() {
+    console.log("===test====");
+    this.$store.dispatch("getFriends");
   },
+  methods: {},
 };
 </script>
 

@@ -4,7 +4,7 @@ export default {
   },
   mutations: {
     login(state, userInfo) {
-      console.log("store----------");
+      console.log("========store userInfo=======");
       console.log(userInfo);
       state.userInfo = userInfo;
       window.localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -15,7 +15,10 @@ export default {
     },
   },
   actions: {
+    // 这个没啥用啊，而且写错了， 要定义成async函数，好像是那个破教程这么写的
+    // 早上看的时候比较急，也不懂vuex，现在忘了
     asyncLogin({ commit }, userInfo) {
+      console.log("aysncLogin");
       commit("login", userInfo);
     },
     asyncLogout({ commit }) {
