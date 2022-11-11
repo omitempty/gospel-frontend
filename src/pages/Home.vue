@@ -43,7 +43,7 @@ export default {
 
 .container {
   height: 80%;
-  width: 80%;
+  width: 75%;
   display: flex;
   background: #fdfdfd;
   .sider {

@@ -12,8 +12,6 @@ export default {
   },
   actions: {
     async getFriends({ commit }) {
-      console.log(this);
-      console.log(this.$http);
       let res = await this._vm.$http.getFriends();
       let list = res.data;
       // 最好在这边直接filter一下，或者在下面来个计算属性
