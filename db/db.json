@@ -150,5 +150,45 @@
       "avatar": "http://5b0988e595225.cdn.sohucs.com/images/20200313/af7152bfc572438ea32d92e1478eb701.jpeg",
       "profile": "我啥也不会"
     }
+  ],
+  "messages": [
+    {
+      "id": 1,
+      "user": {
+        "id": 1,
+        "username": "admin",
+        "password": 123456,
+        "roleState": true,
+        "default": true,
+        "region": "全球",
+        "roleId": 1,
+        "address": "福建省福州市",
+        "telephone": "13253333285",
+        "email": "alice@qq.com",
+        "sex": "男",
+        "avatar": "http://5b0988e595225.cdn.sohucs.com/images/20200313/af7152bfc572438ea32d92e1478eb701.jpeg",
+        "profile": "我是法外狂徒张三"
+      },
+      "content": "你好啊"
+    },
+    {
+      "id": 2,
+      "user": {
+        "username": "lhh",
+        "password": "123456",
+        "region": "北美洲",
+        "roleId": 2,
+        "roleState": true,
+        "default": false,
+        "id": 10,
+        "address": "福建省福州市",
+        "telephone": "13253333285",
+        "email": "alice@qq.com",
+        "sex": "男",
+        "avatar": "http://5b0988e595225.cdn.sohucs.com/images/20200313/af7152bfc572438ea32d92e1478eb701.jpeg",
+        "profile": "我啥也不会"
+      },
+      "content": "吃了吗"
+    }
   ]
 }

@@ -7,23 +7,48 @@
         <input type="text" placeholder="搜索好友" />
       </div>
       <div class="friend-list">
-        <div class="friend" v-for="friend in friends" :key="friend.id">
-          {{ friend.username }}
+        <div
+          class="friend"
+          v-for="friend in friends"
+          :key="friend.id"
+          @click="setChat(friend)"
+        >
+          <div class="avatar">
+            <img :src="friend.avatar" />
+          </div>
+          <div class="lastMessage">
+            <span>{{ friend.address }}</span>
+          </div>
         </div>
       </div>
     </div>
-    <div class="showcase"></div>
-    <button @click="handleClick">点我</button>
+    <div class="showcase">
+      <Empty v-if="!currentFriend"></Empty>
+      <div v-else>
+        <div class="header">
+          <p>{{ currentFriend.username }}</p>
+        </div>
+        <div class="chatarea">
+          <div class="message"></div>
+          <div class="input"></div>
+          <button @click="handleClick">点我</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import Empty from "./Empty.vue";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "",
   data() {
-    return {};
+    return {
+      currentFriend: null,
+      messages: null,
+    };
   },
   created() {
     this.$store.dispatch("getFriends");
@@ -33,13 +58,21 @@ export default {
       console.log(this.user);
       console.log(this.friends);
     },
+    setChat(friend) {
+      console.log(friend);
+      this.currentFriend = { ...friend };
+
+      console.log(this.currentFriend);
+    },
   },
   computed: {
     ...mapState({
       user: (state) => state.user.userInfo,
       friends: (state) => state.friends.list,
+      messages: (state) => state.messages.singleMessages,
     }),
   },
+  components: { Empty },
 };
 </script>
 
@@ -50,6 +83,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
 
   .list {
     height: 100%;
@@ -89,7 +126,26 @@ export default {
       .friend {
         width: 100%;
         height: 80px;
-        border: dashed 1px black;
+        border-top: solid 1px lightgray;
+        display: flex;
+        align-items: center;
+
+        .avatar {
+          img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 15px;
+          }
+        }
+        .lastMessage {
+          span {
+            color: gray;
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
       }
     }
   }
@@ -97,6 +153,16 @@ export default {
     height: 100%;
     flex: 1;
     border: solid 2px red;
+
+    .header {
+      border: solid 2px black;
+      height: 65px;
+      background-color: #f5f7f9;
+      color: gray;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 </style>

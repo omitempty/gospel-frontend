@@ -46,6 +46,10 @@ export default {
   width: 75%;
   display: flex;
   background: #fdfdfd;
+
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
   .sider {
     width: 100px;
     height: 100%;

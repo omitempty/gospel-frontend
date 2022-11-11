@@ -41,11 +41,13 @@ export default {
   methods: {
     //用户登录
     login() {
-      // console.log(this.user);
+      // console.log(this.user.username);
       this.$http
         .login(this.user)
         .then((res) => {
-          this.$store.commit("login", res.data[0]);
+          console.log(res.data);
+          this.$store.commit("login", res.data.user);
+          localStorage.setItem("token", res.data.token);
           this.$router.push({ path: "/home" });
         })
         .catch((err) => console.log(err));
