@@ -5,6 +5,10 @@
     outline: none;
 }
 
+html {
+    background-color: lightblue;
+}
+
 input,
 button,
 select {

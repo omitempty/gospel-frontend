@@ -13,7 +13,7 @@ const router = new VueRouter({
     {
       path: "/home",
       name: "Home",
-      redirect: "/home/empty",
+      redirect: "/home/singlechat",
       component: () => import("../pages/Home"),
       children: [
         {

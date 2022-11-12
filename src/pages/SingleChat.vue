@@ -14,26 +14,29 @@
           @click="setChat(friend)"
         >
           <div class="avatar">
-            <img :src="friend.avatar" />
+            <img :src="friend.photo" />
           </div>
-          <div class="lastMessage">
-            <span>{{ friend.address }}</span>
+          <div class="detail">
+            <p class="name">{{ friend.name }}</p>
+            <p class="lastMessage">你好</p>
           </div>
         </div>
       </div>
     </div>
     <div class="showcase">
       <Empty v-if="!currentFriend"></Empty>
-      <div v-else>
+      <template v-else>
         <div class="header">
-          <p>{{ currentFriend.username }}</p>
+          <p>{{ currentFriend.name }}</p>
         </div>
         <div class="chatarea">
-          <div class="message"></div>
-          <div class="input"></div>
-          <button @click="handleClick">点我</button>
+          <div class="messages">占个位置</div>
+          <div class="input">
+            <input type="text" placeholder="请输入消息..." />
+            <button @click="handleClick">点我</button>
+          </div>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -43,12 +46,9 @@ import { mapState } from "vuex";
 import Empty from "./Empty.vue";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "",
+  name: "SingleChat",
   data() {
-    return {
-      currentFriend: null,
-      messages: null,
-    };
+    return {};
   },
   created() {
     this.$store.dispatch("getFriends");
@@ -60,8 +60,8 @@ export default {
     },
     setChat(friend) {
       console.log(friend);
-      this.currentFriend = { ...friend };
-
+      this.$store.dispatch("setCurrentFriend", friend);
+      this.$store.dispatch("getSingleMessages", friend.id, this.user.id);
       console.log(this.currentFriend);
     },
   },
@@ -69,7 +69,9 @@ export default {
     ...mapState({
       user: (state) => state.user.userInfo,
       friends: (state) => state.friends.list,
-      messages: (state) => state.messages.singleMessages,
+      messages: (state) => state.singleMessages.list,
+      // 这里写错会直接造成组件渲染失败，但是没有任何报错信息
+      currentFriend: (state) => state.singleMessages.currentFriend,
     }),
   },
   components: { Empty },
@@ -138,8 +140,11 @@ export default {
             margin: 15px;
           }
         }
-        .lastMessage {
-          span {
+        .detail {
+          .name {
+            margin-bottom: 5px;
+          }
+          .lastMessage {
             color: gray;
             display: inline-block;
             overflow: hidden;
@@ -154,6 +159,9 @@ export default {
     flex: 1;
     border: solid 2px red;
 
+    display: flex;
+    flex-direction: column;
+
     .header {
       border: solid 2px black;
       height: 65px;
@@ -162,6 +170,38 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    .chatarea {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .messages {
+        flex: 1;
+        border: solid 2px blue;
+      }
+      .input {
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(241, 237, 237, 0.4);
+        border-radius: 24px;
+        margin: 10px;
+        padding: 0 30px;
+        input {
+          width: 100%;
+          height: 70px;
+          border: none;
+          background: none;
+          color: #181c2f;
+          font-size: 16px;
+          display: block;
+          &::placeholder {
+            color: rgba(24, 28, 47, 0.3);
+          }
+        }
+      }
     }
   }
 }

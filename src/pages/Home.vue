@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="bg">
-    <div class="container">
+    <div class="main-container">
       <left-nav-bar class="sider"></left-nav-bar>
       <router-view></router-view>
     </div>
@@ -41,14 +41,15 @@ export default {
   justify-content: center;
 }
 
-.container {
+.main-container {
   height: 80%;
   width: 75%;
   display: flex;
   background: #fdfdfd;
 
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
+  /* border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px; */
+  border-radius: 15px;
   overflow: hidden;
   .sider {
     width: 100px;

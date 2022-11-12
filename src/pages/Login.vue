@@ -23,14 +23,12 @@
 
 <script>
 import "animate.css";
-// eslint-disable-next-line no-unused-vars
-import axios from "axios";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   data() {
     return {
-      //看看用不用转成用户对象
+      // 这里只是接收一下表单数据
       user: {
         username: "",
         password: "",
@@ -41,12 +39,12 @@ export default {
   methods: {
     //用户登录
     login() {
-      // console.log(this.user.username);
       this.$http
         .login(this.user)
         .then((res) => {
           console.log(res.data);
-          this.$store.commit("login", res.data.user);
+          this.$store.dispatch("login", res.data.userInfo);
+          localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
           localStorage.setItem("token", res.data.token);
           this.$router.push({ path: "/home" });
         })

@@ -93,7 +93,7 @@
 
       <!--           转换格式按钮-->
       <div class="changeArea">
-        <li class="el-icon-guide"></li>
+        <li class="el-icon-guide" @click="logout"></li>
       </div>
     </div>
   </div>
@@ -108,14 +108,17 @@ export default {
       withOfIconType: "100px",
       flagOfShow: true,
       flagOfPersonalCenter: true,
-      user: localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user"))
-        : {},
+      user: {},
     };
   },
   methods: {
     personalCenterApper() {
       console.log("hold on");
+    },
+    logout() {
+      localStorage.removeItem("userInfo");
+      localStorage.removeItem("token");
+      this.$router.push({ path: "/login" });
     },
   },
 

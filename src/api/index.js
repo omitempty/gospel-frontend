@@ -44,4 +44,13 @@ export default {
   getFriends() {
     return request.get(`/friend/list`);
   },
+
+  // 获取和某个好友的聊天记录
+  getSingleMessages(friendId, myId) {
+    console.log(friendId, myId);
+    return request.post(`/singleMessage/getRecentSingleMessage`, {
+      friendId: friendId,
+      myselfId: myId,
+    });
+  },
 };
