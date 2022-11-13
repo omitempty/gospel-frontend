@@ -23,6 +23,10 @@
 
 <script>
 import "animate.css";
+// import Vue from "vue";
+// import VueSocketIO from "vue-socket.io";
+// import SocketIO from "socket.io-client";
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
@@ -42,7 +46,19 @@ export default {
       this.$http
         .login(this.user)
         .then((res) => {
-          console.log(res.data.userInfo);
+          console.log(res.data.token);
+          // 单独设置设置socket.io;
+          // Vue.use(
+          //   new VueSocketIO({
+          //     debug: true,
+          //     connection: SocketIO("http://localhost:9999", {
+          //       // autoConnect: false,
+          //       query: "token=" + res.data.token,
+          //     }),
+          //   })
+          // );
+
+          // 存储信息
           this.$store.dispatch("login", res.data.userInfo);
           localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
           localStorage.setItem("token", res.data.token);

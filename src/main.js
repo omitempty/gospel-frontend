@@ -1,8 +1,8 @@
 import Vue from "vue";
 import ElementUI from "element-ui";
 import VueRouter from "vue-router";
-// import VueSocketIO from "vue-socket.io";
-// import SocketIO from "socket.io-client";
+import VueSocketIO from "vue-socket.io";
+import SocketIO from "socket.io-client";
 
 import App from "./App.vue";
 import router from "./router";
@@ -18,15 +18,32 @@ Vue.use(ElementUI, { size: "mini" });
 Vue.use(VueRouter);
 Vue.prototype.$http = api;
 
-// Vue.use(
-//   new VueSocketIO({
-//     debug: true,
-//     connection: SocketIO("ws://localhost:9999"),
-//   })
-// );
+var token = localStorage.getItem("token");
+if (token) {
+  Vue.use(
+    new VueSocketIO({
+      debug: true,
+      connection: SocketIO("http://localhost:9999", {
+        // autoConnect: false,
+        query: "token=" + localStorage.getItem("token"),
+      }),
+    })
+  );
+} else {
+  alert("请重新登录");
+}
 
 new Vue({
   render: (h) => h(App),
   router,
   store,
+  sockets: {
+    // 可以用来测试 是否链接成功了
+    connect: function () {
+      console.log("链接成功");
+    },
+    disconnect() {
+      console.log("Socket 断开");
+    },
+  },
 }).$mount("#app");

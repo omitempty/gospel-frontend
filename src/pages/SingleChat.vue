@@ -30,7 +30,7 @@
           <p>{{ currentFriend.name }}</p>
         </div>
         <!-- <div class="chatarea"> -->
-        <div class="messages">
+        <div id="msgbox" class="messages">
           <div
             class="message"
             v-for="message in messages"
@@ -43,6 +43,7 @@
             <div class="detail">
               <p class="content">{{ message.message }}</p>
             </div>
+            <p class="time">{{ timeFormatter(message.sendTime) }}</p>
           </div>
         </div>
         <!-- </div> -->
@@ -53,7 +54,7 @@
             circle
             size="large"
             icon="el-icon-s-promotion"
-            @click="handleClick"
+            @click="sendMessage"
           ></el-button>
         </div>
       </template>
@@ -64,6 +65,7 @@
 <script>
 import { mapState } from "vuex";
 import Empty from "./Empty.vue";
+import { formatTime } from "@/util";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "SingleChat",
@@ -76,8 +78,34 @@ export default {
     this.$store.dispatch("getFriends");
   },
   methods: {
-    handleClick() {
+    timeFormatter(time) {
+      return formatTime(time);
+    },
+    sendMessage() {
       console.log(this.message);
+      // test
+      this.$socket.emit(
+        "Single_Message",
+        JSON.stringify({
+          id: "",
+          userFrom: this.user.id,
+          userTo: this.currentFriend.id,
+          senderNickname: this.user.name,
+          senderPhoto: this.user.photo,
+          sendTime: new Date(),
+          fileRawName: "",
+          messageType: "text",
+          message: this.message,
+          isRead: "0",
+        })
+      );
+
+      this.message = "";
+
+      this.$store.dispatch("getSingleMessages", {
+        friendId: this.currentFriend.id,
+        myselfId: this.user.id,
+      })
     },
     setChat(friend) {
       console.log(friend);
@@ -188,9 +216,12 @@ export default {
 
     .header {
       border: solid 2px black;
-      background-color: #f5f7f9;
-      color: gray;
+      /* background-color: #f5f7f9; */
+      background-color: lightblue;
       display: flex;
+      font-size: 19px;
+      font-weight: 550;
+
       align-items: center;
       justify-content: center;
       height: 65px;
@@ -214,9 +245,28 @@ export default {
             margin: 15px;
           }
         }
+
+        .detail {
+          border-radius: 5px;
+          background-color: white;
+          box-shadow: 1px 1px 1px 1px lightgray;
+          padding: 5px 10px;
+        }
+
+        .time {
+          font-size: 10px;
+          padding: 10px;
+          color: gray;
+        }
       }
       .my-message {
         flex-direction: row-reverse;
+        .detail {
+          border-radius: 5px;
+          background-color: skyblue;
+          box-shadow: 1px 1px 1px 1px lightgray;
+          padding: 5px 10px;
+        }
       }
     }
 

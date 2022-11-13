@@ -6,6 +6,14 @@ export default {
   mutations: {
     setSingleMessages(state, list) {
       state.list = list;
+      this._vm.$nextTick(() => {
+        let msg = document.getElementById("msgbox");
+        console.log("===========scroll debug=========");
+        console.log(msg);
+        if (msg) {
+          msg.scrollTop = msg.scrollHeight - 30;
+        }
+      });
     },
     setCurrentFriend(state, friend) {
       state.currentFriend = friend;
