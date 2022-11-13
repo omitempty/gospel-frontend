@@ -51,4 +51,22 @@ export default {
     console.log(param);
     return request.post(`/singleMessage/getRecentSingleMessages`, param);
   },
+
+  // 获取当前id用户的群列表
+  getGroups() {
+    return request.get(`/group/getMyGroup`);
+  },
+
+  // 获取某个群的聊天记录
+  // 这里get请求还带params参数了，不知道会不会有问题
+  getGroupMessages(param) {
+    return request.get(
+      `groupMessage/getRecentGroupMessages?groupId=${param.groupId}&myselfId=${param.myselfId}`
+    );
+  },
+
+  // 获取某个群聊的成员列表
+  getGroupMembers(param) {
+    return request.post("/group/getAllMembers", param);
+  },
 };

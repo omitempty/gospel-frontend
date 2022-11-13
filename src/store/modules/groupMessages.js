@@ -6,15 +6,24 @@ export default {
   mutations: {
     setGroupMessages(state, list) {
       state.list = list;
+
+      // 消息滚动到底部，msgbox是id，不能改
+      this._vm.$nextTick(() => {
+        let msg = document.getElementById("msgbox");
+        if (msg) {
+          msg.scrollTop = msg.scrollHeight;
+        }
+      });
     },
-    setCurrentGoup(state, group) {
+    setCurrentGroup(state, group) {
       state.currentGroup = group;
     },
   },
   actions: {
-    async getGroupMessages({ commit }) {
-      let res = await this._vm.$http.getGroupMessages();
-      let list = res.data;
+    async getGroupMessages({ commit }, payload) {
+      let res = await this._vm.$http.getGroupMessages(payload);
+      console.log(res.data);
+      let list = res.data.groupMessage;
       console.log("=======get group message========");
       console.log(list);
       commit("setGroupMessages", list);

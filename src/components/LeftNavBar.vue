@@ -53,7 +53,7 @@
             >
               <router-link
                 style="font-size: 20px"
-                :to="{ name: 'Home' }"
+                :to="{ path: 'groupchat' }"
                 active-class="active2"
               >
                 <li class="el-icon-user"></li>
@@ -67,7 +67,7 @@
             >
               <router-link
                 style="font-size: 20px"
-                to="#"
+                :to="{ path: 'search' }"
                 active-class="active2"
               >
                 <li class="el-icon-zoom-in"></li>

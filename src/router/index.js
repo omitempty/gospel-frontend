@@ -26,6 +26,16 @@ const router = new VueRouter({
           name: "SingleChat",
           component: () => import("../pages/SingleChat.vue"),
         },
+        {
+          path: "groupchat",
+          name: "GroupChat",
+          component: () => import("../pages/GroupChat.vue"),
+        },
+        {
+          path: "search",
+          name: "Search",
+          component: () => import("../pages/Search.vue"),
+        },
       ],
     },
     {

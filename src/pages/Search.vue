@@ -4,7 +4,7 @@
     <div class="list">
       <!-- 搜索，先做个样式 -->
       <div class="search">
-        <input type="text" placeholder="搜索好友" />
+        <input type="text" v-model="searchInput" placeholder="搜索好友" />
       </div>
       <div class="friend-list">
         <div
@@ -18,114 +18,46 @@
           </div>
           <div class="detail">
             <p class="name">{{ friend.name }}</p>
-            <p class="lastMessage">你好</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="showcase">
-      <Empty v-if="!currentFriend"></Empty>
-      <template v-else>
-        <div class="header">
-          <p>{{ currentFriend.name }}</p>
-        </div>
-        <!-- <div class="chatarea"> -->
-        <div id="msgbox" class="messages">
-          <div
-            class="message"
-            v-for="message in messages"
-            :class="message.userFrom == user?.id ? 'my-message' : ''"
-            :key="message.id"
-          >
-            <div class="avatar">
-              <img :src="message.senderPhoto" />
-            </div>
-            <div class="detail">
-              <p class="content">{{ message.message }}</p>
-            </div>
-            <p class="time">{{ timeFormatter(message.sendTime) }}</p>
-          </div>
-        </div>
-        <!-- </div> -->
-        <div class="input">
-          <input type="text" v-model="message" placeholder="请输入消息..." />
-          <el-button
-            type="primary"
-            circle
-            size="large"
-            icon="el-icon-s-promotion"
-            @click="sendMessage"
-          ></el-button>
-        </div>
-      </template>
-    </div>
+    <div class="showcase"></div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import Empty from "./Empty.vue";
 import { formatTime } from "@/util";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "SingleChat",
   data() {
     return {
-      message: "",
+      searchInput: "",
+      friends: [],
+      requests: [],
     };
   },
   created() {
-    this.$store.dispatch("getFriends");
+    this.$http
+      .getRequests()
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
   },
   methods: {
     timeFormatter(time) {
       return formatTime(time);
     },
-    sendMessage() {
-      console.log(this.message);
-      // test
-      this.$socket.emit(
-        "Single_Message",
-        JSON.stringify({
-          id: "",
-          userFrom: this.user.id,
-          userTo: this.currentFriend.id,
-          senderNickname: this.user.name,
-          senderPhoto: this.user.photo,
-          sendTime: new Date(),
-          fileRawName: "",
-          messageType: "text",
-          message: this.message,
-          isRead: "0",
-        })
-      );
-
-      this.message = "";
-
-      this.$store.dispatch("getSingleMessages", {
-        friendId: this.currentFriend.id,
-        myselfId: this.user.id,
-      });
-    },
-    setChat(friend) {
-      // console.log(friend);
-      this.$store.dispatch("setCurrentFriend", friend);
-      this.$store.dispatch("getSingleMessages", {
-        friendId: friend.id,
-        myselfId: this.user.id,
-      });
-    },
   },
+
   computed: {
     ...mapState({
       user: (state) => state.user.userInfo,
-      friends: (state) => state.friends.list,
-      messages: (state) => state.singleMessages.list,
-      // 这里写错会直接造成组件渲染失败，但是没有任何报错信息
-      currentFriend: (state) => state.singleMessages.currentFriend,
     }),
   },
-  components: { Empty },
 };
 </script>
 

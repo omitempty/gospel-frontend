@@ -4,30 +4,43 @@
     <div class="list">
       <!-- 搜索，先做个样式 -->
       <div class="search">
-        <input type="text" placeholder="搜索好友" />
+        <input type="text" placeholder="搜索群组" />
       </div>
       <div class="friend-list">
         <div
           class="friend"
-          v-for="friend in friends"
-          :key="friend.id"
-          @click="setChat(friend)"
+          v-for="friend in groups"
+          :key="friend.fzuGroup.id"
+          @click="setChat(friend.fzuGroup)"
         >
           <div class="avatar">
-            <img :src="friend.photo" />
+            <img :src="friend.fzuGroup.photo" />
           </div>
           <div class="detail">
-            <p class="name">{{ friend.name }}</p>
-            <p class="lastMessage">你好</p>
+            <p class="name">{{ friend.fzuGroup.groupName }}</p>
+            <p class="lastMessage">
+              {{ friend.groupMessageVo ? friend.groupMessageVo.message : "" }}
+            </p>
           </div>
         </div>
       </div>
     </div>
     <div class="showcase">
-      <Empty v-if="!currentFriend"></Empty>
+      <Empty v-if="!currentGroup"></Empty>
       <template v-else>
         <div class="header">
-          <p>{{ currentFriend.name }}</p>
+          <p>{{ currentGroup.groupName }}</p>
+        </div>
+        <div class="members">
+          <div class="member" v-for="member in members" :key="member.id">
+            <div class="avatar">
+              <img :src="member.photo" />
+            </div>
+            <div class="member-info">
+              <p class="name">{{ member.name }}</p>
+              <!-- <p class="role" v-if="member."></p> -->
+            </div>
+          </div>
         </div>
         <!-- <div class="chatarea"> -->
         <div id="msgbox" class="messages">
@@ -68,14 +81,15 @@ import Empty from "./Empty.vue";
 import { formatTime } from "@/util";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "SingleChat",
+  name: "GroupChat",
   data() {
     return {
       message: "",
+      members: [],
     };
   },
   created() {
-    this.$store.dispatch("getFriends");
+    this.$store.dispatch("getGroups");
   },
   methods: {
     timeFormatter(time) {
@@ -85,11 +99,11 @@ export default {
       console.log(this.message);
       // test
       this.$socket.emit(
-        "Single_Message",
+        "Group_Message",
         JSON.stringify({
           id: "",
           userFrom: this.user.id,
-          userTo: this.currentFriend.id,
+          groupId: this.currentGroup.id,
           senderNickname: this.user.name,
           senderPhoto: this.user.photo,
           sendTime: new Date(),
@@ -102,16 +116,27 @@ export default {
 
       this.message = "";
 
-      this.$store.dispatch("getSingleMessages", {
-        friendId: this.currentFriend.id,
+      this.$store.dispatch("getGroupMessages", {
+        groupId: this.currentGroup.id,
         myselfId: this.user.id,
       });
     },
-    setChat(friend) {
-      // console.log(friend);
-      this.$store.dispatch("setCurrentFriend", friend);
-      this.$store.dispatch("getSingleMessages", {
-        friendId: friend.id,
+    // 其实是setGroup, 工期太赶，懒得改了
+    setChat(group) {
+      console.log(group);
+      this.$http
+        .getGroupMembers({ groupId: group.id })
+        .then((res) => {
+          this.members = res.data.AllMembers;
+          console.log(this.members);
+        })
+        .catch((error) => console.log(error));
+      //   console.log(group);
+      this.$store.dispatch("setCurrentGroup", group);
+      // groupId写成groupid了
+      console.log(this.user.id);
+      this.$store.dispatch("getGroupMessages", {
+        groupId: group.id,
         myselfId: this.user.id,
       });
     },
@@ -119,10 +144,10 @@ export default {
   computed: {
     ...mapState({
       user: (state) => state.user.userInfo,
-      friends: (state) => state.friends.list,
-      messages: (state) => state.singleMessages.list,
+      groups: (state) => state.groups.list,
+      messages: (state) => state.groupMessages.list,
       // 这里写错会直接造成组件渲染失败，但是没有任何报错信息
-      currentFriend: (state) => state.singleMessages.currentFriend,
+      currentGroup: (state) => state.groupMessages.currentGroup,
     }),
   },
   components: { Empty },
@@ -206,6 +231,7 @@ export default {
     }
   }
   .showcase {
+    position: relative;
     height: 100%;
     flex: 1;
     border: solid 2px red;
@@ -226,9 +252,40 @@ export default {
       height: 65px;
     }
 
+    .members {
+      border: 2px dashed black;
+      width: 20%;
+      height: calc(100% - 185px);
+      position: absolute;
+      top: 65px;
+      right: 0;
+      z-index: 100;
+      overflow-y: auto;
+      .member {
+        display: flex;
+        align-items: center;
+        .avatar {
+          img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 5px;
+          }
+        }
+        .member-info {
+          .name {
+            padding-left: 2px;
+            font-size: 10px;
+          }
+          .role {
+          }
+        }
+      }
+    }
+
     .messages {
       flex: 1;
-      width: 100%;
+      width: 80%;
       border: solid 2px blue;
       overflow-y: auto;
 
