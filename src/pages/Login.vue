@@ -42,7 +42,7 @@ export default {
       this.$http
         .login(this.user)
         .then((res) => {
-          console.log(res.data);
+          console.log(res.data.userInfo);
           this.$store.dispatch("login", res.data.userInfo);
           localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
           localStorage.setItem("token", res.data.token);

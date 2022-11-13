@@ -12,10 +12,10 @@ export default {
     },
   },
   actions: {
-    async getSingleMessages({ commit }, friendId, myId) {
-      let res = await this._vm.$http.getSingleMessages(friendId, myId);
-      console.log(res.data);
-      let list = res.data;
+    async getSingleMessages({ commit }, payload) {
+      let res = await this._vm.$http.getSingleMessages(payload);
+      // 取数据忘改了md
+      let list = res.data.singleMessage;
       console.log("========get single messages=======");
       console.log(list);
       commit("setSingleMessages", list);

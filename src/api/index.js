@@ -33,8 +33,8 @@ request.interceptors.response.use(
 export default {
   //用户登录
   login(user) {
-    console.log(user.password);
-    return request.post(`/user/login/`, {
+    console.log(user);
+    return request.post(`/user/login`, {
       account: user.username,
       password: user.password,
     });
@@ -46,11 +46,9 @@ export default {
   },
 
   // 获取和某个好友的聊天记录
-  getSingleMessages(friendId, myId) {
-    console.log(friendId, myId);
-    return request.post(`/singleMessage/getRecentSingleMessage`, {
-      friendId: friendId,
-      myselfId: myId,
-    });
+  getSingleMessages(param) {
+    // tmd 路径写错了，参数似乎也只能传一个对象
+    console.log(param);
+    return request.post(`/singleMessage/getRecentSingleMessages`, param);
   },
 };

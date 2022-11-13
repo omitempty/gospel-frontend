@@ -42,7 +42,7 @@
                 :to="{ path: 'singlechat' }"
                 active-class="active2"
               >
-                <li class="el-icon-s-home"></li>
+                <li class="el-icon-chat-dot-round"></li>
               </router-link>
             </el-tooltip>
             <el-tooltip
@@ -56,7 +56,7 @@
                 :to="{ name: 'Home' }"
                 active-class="active2"
               >
-                <li class="el-icon-s-home"></li>
+                <li class="el-icon-user"></li>
               </router-link>
             </el-tooltip>
             <el-tooltip
@@ -70,7 +70,7 @@
                 to="#"
                 active-class="active2"
               >
-                <li class="el-icon-coffee-cup"></li>
+                <li class="el-icon-zoom-in"></li>
               </router-link>
             </el-tooltip>
             <el-tooltip
@@ -84,7 +84,7 @@
                 to="#"
                 active-class="active2"
               >
-                <li class="el-icon-coffee-cup"></li>
+                <li class="el-icon-message"></li>
               </router-link>
             </el-tooltip>
           </div>
@@ -93,7 +93,9 @@
 
       <!--           转换格式按钮-->
       <div class="changeArea">
-        <li class="el-icon-guide" @click="logout"></li>
+        <el-tooltip class="item" effect="dark" content="登出" placement="right">
+          <li class="el-icon-switch-button" @click="logout"></li>
+        </el-tooltip>
       </div>
     </div>
   </div>
