@@ -105,7 +105,7 @@ export default {
       return formatTime(time);
     },
     sendMessage() {
-      console.log(this.message);
+      //   console.log(this.message);
       // test
       this.$socket.emit(
         "Group_Message",
@@ -135,7 +135,7 @@ export default {
     },
     // 其实是setGroup, 工期太赶，懒得改了
     setChat(group) {
-      console.log(group);
+      //   console.log(group);
       this.$http
         .getGroupMembers({ groupId: group.id })
         .then((res) => {
@@ -145,13 +145,12 @@ export default {
             else return a.id - b.id;
           });
           this.members = res.data.AllMembers;
-          console.log(this.members);
+          //   console.log(this.members);
         })
         .catch((error) => console.log(error));
       //   console.log(group);
       this.$store.dispatch("setCurrentGroup", group);
-      // groupId写成groupid了
-      console.log(this.user.id);
+
       this.$store.dispatch("getGroupMessages", {
         groupId: group.id,
         myselfId: this.user.id,

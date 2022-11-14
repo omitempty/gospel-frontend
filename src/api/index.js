@@ -42,13 +42,13 @@ export default {
 
   // 获取当前id用户的好友列表
   getFriends() {
-    return request.get(`/friend/list`);
+    return request.get(`/friend/getFriendAndMessage`);
   },
 
   // 获取和某个好友的聊天记录
   getSingleMessages(param) {
     // tmd 路径写错了，参数似乎也只能传一个对象
-    console.log(param);
+    // console.log(param);
     return request.post(`/singleMessage/getRecentSingleMessages`, param);
   },
 

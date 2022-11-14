@@ -18,7 +18,18 @@
           </div>
           <div class="detail">
             <p class="name">{{ friend.name }}</p>
-            <p class="lastMessage">你好</p>
+            <div class="lastMessage">
+              <p class="content">
+                {{ friend.lastMessage ? friend.lastMessage.message : "" }}
+              </p>
+              <p class="time">
+                {{
+                  friend.lastMessage
+                    ? timeFormatter(friend.lastMessage.sendTime)
+                    : ""
+                }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -106,6 +117,8 @@ export default {
         friendId: this.currentFriend.id,
         myselfId: this.user.id,
       });
+
+      this.$store.dispatch("getFriends");
     },
     setChat(friend) {
       // console.log(friend);
@@ -192,14 +205,27 @@ export default {
           }
         }
         .detail {
+          width: 100%;
           .name {
             margin-bottom: 5px;
           }
           .lastMessage {
-            color: gray;
-            display: inline-block;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .content {
+              color: gray;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              line-height: 100%;
+            }
+            .time {
+              align-self: center;
+              font-size: 12px;
+              color: gray;
+              line-height: 100%;
+              padding-right: 12px;
+            }
           }
         }
       }

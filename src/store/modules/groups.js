@@ -20,8 +20,8 @@ export default {
         else return 0;
       });
       let list = res.data.myGroup;
-      console.log("========groups list=======");
-      console.log(list);
+      // console.log("========groups list=======");
+      // console.log(list);
       commit("setGroups", list);
     },
   },
