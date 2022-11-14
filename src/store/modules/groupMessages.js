@@ -1,3 +1,4 @@
+
 export default {
   state: {
     list: [],
@@ -22,16 +23,15 @@ export default {
   actions: {
     async getGroupMessages({ commit }, payload) {
       let res = await this._vm.$http.getGroupMessages(payload);
-      console.log(res.data);
       let list = res.data.groupMessage;
-      console.log("=======get group message========");
-      console.log(list);
+      // console.log("=======get group message========");
+      // console.log(list);
       commit("setGroupMessages", list);
     },
     // 只是为了统一用dispatch
     setCurrentGroup({ commit }, group) {
-      console.log("=======set current group=======");
-      console.log(group);
+      // console.log("=======set current group=======");
+      // console.log(group);
       commit("setCurrentGroup", group);
     },
   },

@@ -18,9 +18,18 @@
           </div>
           <div class="detail">
             <p class="name">{{ friend.fzuGroup.groupName }}</p>
-            <p class="lastMessage">
-              {{ friend.groupMessageVo ? friend.groupMessageVo.message : "" }}
-            </p>
+            <div class="lastMessage">
+              <p class="content">
+                {{ friend.groupMessageVo ? friend.groupMessageVo.message : "" }}
+              </p>
+              <p class="time">
+                {{
+                  friend.groupMessageVo
+                    ? timeFormatter(friend.groupMessageVo.sendTime)
+                    : ""
+                }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -120,6 +129,9 @@ export default {
         groupId: this.currentGroup.id,
         myselfId: this.user.id,
       });
+
+      // 记得把列表也更新了
+      this.$store.dispatch("getGroups");
     },
     // 其实是setGroup, 工期太赶，懒得改了
     setChat(group) {
@@ -222,14 +234,28 @@ export default {
           }
         }
         .detail {
+          width: 100%;
           .name {
             margin-bottom: 5px;
           }
+
           .lastMessage {
-            color: gray;
-            display: inline-block;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .content {
+              color: gray;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              line-height: 100%;
+            }
+            .time {
+              align-self: center;
+              font-size: 12px;
+              color: gray;
+              line-height: 100%;
+              padding-right: 12px;
+            }
           }
         }
       }
