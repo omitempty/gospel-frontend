@@ -38,7 +38,7 @@
             </div>
             <div class="member-info">
               <p class="name">{{ member.name }}</p>
-              <!-- <p class="role" v-if="member."></p> -->
+              <p class="role" v-if="member.member_type == 'admin'">群主</p>
             </div>
           </div>
         </div>
@@ -127,6 +127,11 @@ export default {
       this.$http
         .getGroupMembers({ groupId: group.id })
         .then((res) => {
+          res.data.AllMembers.sort((a, b) => {
+            if (a.member_type == "admin") return -1;
+            else if (b.member_type == "admin") return 1;
+            else return a.id - b.id;
+          });
           this.members = res.data.AllMembers;
           console.log(this.members);
         })
@@ -273,11 +278,15 @@ export default {
           }
         }
         .member-info {
+          display: flex;
           .name {
             padding-left: 2px;
             font-size: 10px;
           }
           .role {
+            font-size: 8px;
+            padding-left: 2px;
+            color: gray;
           }
         }
       }
