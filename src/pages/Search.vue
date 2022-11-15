@@ -37,7 +37,7 @@
         </div>
       </div>
       <div v-else class="friend-list">
-        <div class="friend" v-for="friend in groups" :key="friend.id">
+        <div class="friend" v-for="friend in groups" :key="friend.fzuGroup.id">
           <div class="avatar">
             <img :src="friend.fzuGroup.photo" />
           </div>
@@ -49,7 +49,7 @@
                 circle
                 size="mini"
                 icon="el-icon-plus"
-                @click="sendGroupRequest(friend.id)"
+                @click="sendGroupRequest(friend.fzuGroup.id)"
               ></el-button>
             </div>
           </div>
@@ -82,14 +82,14 @@
                   circle
                   size="mini"
                   icon="el-icon-check"
-                  @click="sendFriendRequest(friend.id)"
+                  @click="passFriendRequest(friend.id)"
                 ></el-button>
                 <el-button
                   type="danger"
                   circle
                   size="mini"
                   icon="el-icon-close"
-                  @click="sendFriendRequest(friend.id)"
+                  @click="rejectFriendRequest(friend.id)"
                 ></el-button>
               </div>
             </div>
@@ -136,8 +136,20 @@
                 {{ mapStatus(friend.groupEnterRequest.status) }}
               </p>
               <div v-if="friend.groupEnterRequest.status == 0" class="options">
-                <button>通过</button>
-                <button>拒绝</button>
+                <el-button
+                  type="primary"
+                  circle
+                  size="mini"
+                  icon="el-icon-check"
+                  @click="passGroupRequest(friend.groupEnterRequest.id)"
+                ></el-button>
+                <el-button
+                  type="danger"
+                  circle
+                  size="mini"
+                  icon="el-icon-close"
+                  @click="rejectGroupRequest(friend.groupEnterRequest.id)"
+                ></el-button>
               </div>
             </div>
           </div>
@@ -195,6 +207,26 @@ export default {
   },
   methods: {
     // handle button click
+    passFriendRequest(friendId) {
+      // console.log("接受好友请求", friendId);
+      this.$http
+        .passFriendRequest(friendId)
+        .then(() => {
+          this.getFriendRequestsToMe();
+        })
+        .catch((error) => console.log(error));
+    },
+
+    rejectFriendRequest(friendId) {
+      // console.log("拒绝好友请求", friendId);
+      this.$http
+        .rejectFriendRequest(friendId)
+        .then(() => {
+          this.getFriendRequestsToMe();
+        })
+        .catch((error) => console.log(error));
+    },
+
     sendFriendRequest(friendId) {
       console.log("发送好友请求", friendId);
       var param = {
@@ -207,13 +239,39 @@ export default {
         .sendFriendRequest(param)
         .then(() => {
           // 更新一下
-          this.getGroupRequestsFromMe();
+          this.getFriendRequestsFromMe();
         })
         .catch((error) => console.log(error));
     },
     sendGroupRequest(groupId) {
       console.log("发送群组请求", groupId);
-      // this.$http.
+      this.$http
+        .sendGroupRequest(groupId)
+        .then((res) => {
+          console.log(res);
+          this.getGroupRequestsFromMe();
+        })
+        .catch((error) => console.log(error));
+    },
+    passGroupRequest(requestId) {
+      console.log("通过群组请求", requestId);
+      this.$http
+        .passGroupRequest(requestId)
+        .then((res) => {
+          console.log(res);
+          this.getGroupRequestsToMe();
+        })
+        .catch((error) => console.log(error));
+    },
+    rejectGroupRequest(requestId) {
+      console.log("拒绝群组请求", requestId);
+      this.$http
+        .rejectGroupRequest(requestId)
+        .then((res) => {
+          console.log(res);
+          this.getGroupRequestsToMe();
+        })
+        .catch((error) => console.log(error));
     },
     // qq的好友和群也是分开的，微信压根就只有好友请求
     getFriendRequestsToMe() {
@@ -257,7 +315,7 @@ export default {
       this.$http
         .getGroupRequestsFromMe()
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.myGroupRequests = res.data.myRequestList;
         })
         .catch((error) => console.log(error));
@@ -268,7 +326,7 @@ export default {
       this.$http
         .searchUsers(this.searchInput)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data.user_list) {
             this.friends = res.data.user_list;
           } else {

@@ -114,11 +114,43 @@ export default {
 
   // 其实只有通过post status一个接口，但是这边封装一下，内部逻辑对视图透明
   // 通过好友请求
-  passFriendRequest() {
-    return request.get();
+  passFriendRequest(userFrom) {
+    return request.post("/friend/update", {
+      flag: 1,
+      userFrom: userFrom,
+    });
   },
 
   // 拒绝好友请求
+  rejectFriendRequest(userFrom) {
+    return request.post("/friend/update", {
+      flag: 2,
+      userFrom: userFrom,
+    });
+  },
+
+  // 发送加群请求
+  sendGroupRequest(groupId) {
+    return request.post("/group/requestEnter", {
+      groupId: groupId,
+    });
+  },
+
+  // 同意加群请求
+  passGroupRequest(requestId) {
+    return request.post("/group/dealRequest", {
+      operate: 1,
+      requestListId: requestId,
+    });
+  },
+
+  // 拒绝加群请求
+  rejectGroupRequest(requestId) {
+    return request.post("/group/dealRequest", {
+      operate: 2,
+      requestListId: requestId,
+    });
+  },
 
   // 获取导师列表
   getTutors(major) {
