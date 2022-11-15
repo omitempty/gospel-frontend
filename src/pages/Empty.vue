@@ -1,13 +1,19 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="container">
-    <p>Gospel</p>
+    <!-- <img src="../assets/zhicheng.svg" alt="gospel" /> -->
+    <!-- <img src="../assets/fzu.png" style="width: 200px" alt="gospel" /> -->
+    <img src="../assets/fzu-detail.jpg" style="width: 400px" alt="gospel" />
+    <!-- <img
+      src="http://localhost:8081/fzu-detail.jpg"
+      style="width: 400px"
+      alt="gospel"
+    /> -->
   </div>
 </template>
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import axios from "axios";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "",
