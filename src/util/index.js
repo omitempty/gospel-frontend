@@ -49,7 +49,7 @@ const formatTime = (date) => {
   } else if (1 <= daysAgo && daysAgo < 2) {
     return `昨天 ${hourAndMinute}`;
   } else if (yearsAgo < 1) {
-    return monthAndDay + " " + hourAndMinute;
+    return monthAndDay;
   } else {
     return year + monthAndDay + " " + hourAndMinute;
   }

@@ -5,25 +5,21 @@
       <!-- 搜索，先做个样式 -->
       <div class="search">
         <input
-          @keyup.enter="isFriend ? searchUsers() : searchGroups()"
           type="text"
           v-model="searchInput"
-          :placeholder="holder"
+          :placeholder="user.flag == 1 ? '搜索学生' : '搜索导师'"
         />
       </div>
-      <div class="search-switch">
-        <span @click="switchFriend">好友</span>
-        <span> | </span>
-        <span @click="switchGroup">群聊</span>
-      </div>
-      <div v-if="isFriend" class="friend-list">
-        <div class="friend" v-for="friend in friends" :key="friend.id">
+      <div v-if="isTeacher" class="friend-list">
+        <div class="friend" v-for="friend in students" :key="friend.id">
           <div class="avatar">
             <img :src="friend.photo" />
           </div>
           <div class="detail">
-            <p class="name">{{ friend.name }}</p>
-
+            <div class="tutor-info">
+              <span class="name">{{ friend.name }}</span>
+              <span class="major">{{ friend.major }}</span>
+            </div>
             <div class="options">
               <el-button
                 type="primary"
@@ -36,20 +32,37 @@
           </div>
         </div>
       </div>
+      <!-- student page -->
       <div v-else class="friend-list">
-        <div class="friend" v-for="friend in groups" :key="friend.fzuGroup.id">
+        <div
+          class="friend"
+          v-for="friend in teachers"
+          :key="friend.id"
+          @click="showTutorHomepage(friend)"
+        >
           <div class="avatar">
-            <img :src="friend.fzuGroup.photo" />
+            <img :src="friend.photo" />
           </div>
           <div class="detail">
-            <p class="name">{{ friend.fzuGroup.groupName }}</p>
+            <div class="tutor-info">
+              <p class="name">{{ friend.name }}</p>
+              <p class="major">{{ friend.major }}</p>
+            </div>
             <div class="options">
+              <el-button
+                type="primary"
+                plain
+                circle
+                size="mini"
+                icon="el-icon-plus"
+                @click="sendFriendRequest(friend.id)"
+              ></el-button>
               <el-button
                 type="primary"
                 circle
                 size="mini"
-                icon="el-icon-plus"
-                @click="sendGroupRequest(friend.fzuGroup.id)"
+                icon="el-icon-sort"
+                @click="sendTutorRequest(friend.id)"
               ></el-button>
             </div>
           </div>
@@ -60,12 +73,12 @@
       <div class="header">
         <p>{{ this.header }}</p>
       </div>
-      <div class="search-switch">
-        <span @click="switchTo">我收到的</span>
+      <div v-if="!isTeacher" class="search-switch">
+        <span @click="switchMine">我的申请</span>
         <span> | </span>
-        <span @click="switchFrom">我发出的</span>
+        <span @click="switchHomepage">导师主页</span>
       </div>
-      <template v-if="isFriend">
+      <template v-if="isTeacher">
         <div v-if="toMe" class="friend-list">
           <div class="friend" v-for="friend in friendRequests" :key="friend.id">
             <div class="avatar">
@@ -117,63 +130,32 @@
         </div>
       </template>
       <template v-else>
+        <!-- 我的申请 -->
         <div v-if="toMe" class="friend-list">
-          <div
-            class="friend"
-            v-for="friend in groupRequests"
-            :key="friend.groupEnterRequest.id"
-          >
+          <div class="friend" v-for="friend in requests" :key="friend.id">
             <div class="avatar">
-              <img :src="friend.applyUser.photo" />
+              <img :src="friend.photo" />
             </div>
             <div class="detail">
               <div class="description">
-                <span class="name">{{ friend.applyUser.name }}</span>
-                <span class="join"> 申请加入 </span>
-                <span>{{ friend.fzuGroup.groupName }}</span>
+                <span class="name">{{ friend.name }}</span>
+                <span class="time">{{ timeFormatter(friend.send_time) }}</span>
               </div>
-              <p class="status" v-if="friend.groupEnterRequest.status != 0">
-                {{ mapStatus(friend.groupEnterRequest.status) }}
+              <p class="status">
+                {{ mapStatus(friend.status) }}
               </p>
-              <div v-if="friend.groupEnterRequest.status == 0" class="options">
-                <el-button
-                  type="primary"
-                  circle
-                  size="mini"
-                  icon="el-icon-check"
-                  @click="passGroupRequest(friend.groupEnterRequest.id)"
-                ></el-button>
-                <el-button
-                  type="danger"
-                  circle
-                  size="mini"
-                  icon="el-icon-close"
-                  @click="rejectGroupRequest(friend.groupEnterRequest.id)"
-                ></el-button>
-              </div>
             </div>
           </div>
         </div>
-        <div v-else class="friend-list">
-          <div
-            class="friend"
-            v-for="friend in myGroupRequests"
-            :key="friend.groupEnterRequest.id"
-          >
-            <div class="avatar">
-              <img :src="friend.groupInfo.photo" />
-            </div>
-            <div class="detail">
-              <p class="name">{{ friend.groupInfo.groupName }}</p>
-              <p class="status" v-if="friend.groupEnterRequest.status != 0">
-                {{ mapStatus(friend.groupEnterRequest.status) }}
-              </p>
-              <div v-if="friend.groupEnterRequest.status == 0" class="options">
-                <span class="tobeverified">待验证</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- <div v-else class="friend-list">
+
+        </div> -->
+        <iframe
+          v-else
+          class="homepage-frame"
+          :src="currentTutor.profile"
+          frameborder="0"
+        ></iframe>
       </template>
     </div>
   </div>
@@ -186,11 +168,10 @@ import moment from "moment";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: "Search",
+  name: "Tutor",
   data() {
     return {
       header: "好友申请",
-      holder: "搜索好友",
       isFriend: true,
       toMe: true,
       searchInput: "",
@@ -200,33 +181,35 @@ export default {
       groups: [],
       groupRequests: [],
       myGroupRequests: [],
+
+      students: [],
+      teachers: [],
+      requests: [],
+      applications: [],
+      currentTutor: null,
+      currentStudent: null,
     };
   },
   created() {
-    this.updateAll();
+    this.getTeachers();
+    this.getRequests();
   },
   methods: {
+    showTutorHomepage(tutor) {
+      console.log("click tutor");
+      this.currentTutor = tutor;
+      this.switchHomepage();
+    },
     // handle button click
-    passFriendRequest(friendId) {
-      // console.log("接受好友请求", friendId);
+    getTeachers() {
       this.$http
-        .passFriendRequest(friendId)
-        .then(() => {
-          this.getFriendRequestsToMe();
+        .getTutors()
+        .then((res) => {
+          //   console.log(res.data);
+          this.teachers = res.data.teachers;
         })
         .catch((error) => console.log(error));
     },
-
-    rejectFriendRequest(friendId) {
-      // console.log("拒绝好友请求", friendId);
-      this.$http
-        .rejectFriendRequest(friendId)
-        .then(() => {
-          this.getFriendRequestsToMe();
-        })
-        .catch((error) => console.log(error));
-    },
-
     sendFriendRequest(friendId) {
       console.log("发送好友请求", friendId);
       var param = {
@@ -237,135 +220,62 @@ export default {
       console.log(param);
       this.$http
         .sendFriendRequest(param)
-        .then(() => {
-          // 更新一下
-          this.getFriendRequestsFromMe();
-        })
+        .then(() => {})
         .catch((error) => console.log(error));
     },
-    sendGroupRequest(groupId) {
-      console.log("发送群组请求", groupId);
+    // 发送导师申请
+    sendTutorRequest(teacherId) {
       this.$http
-        .sendGroupRequest(groupId)
+        .sendTutorRequest(teacherId)
         .then((res) => {
           console.log(res);
-          this.getGroupRequestsFromMe();
         })
         .catch((error) => console.log(error));
     },
-    passGroupRequest(requestId) {
-      console.log("通过群组请求", requestId);
+    // 获取我的导师申请
+    getRequests() {
       this.$http
-        .passGroupRequest(requestId)
-        .then((res) => {
-          console.log(res);
-          this.getGroupRequestsToMe();
-        })
-        .catch((error) => console.log(error));
-    },
-    rejectGroupRequest(requestId) {
-      console.log("拒绝群组请求", requestId);
-      this.$http
-        .rejectGroupRequest(requestId)
-        .then((res) => {
-          console.log(res);
-          this.getGroupRequestsToMe();
-        })
-        .catch((error) => console.log(error));
-    },
-    // qq的好友和群也是分开的，微信压根就只有好友请求
-    getFriendRequestsToMe() {
-      this.$http
-        .getFriendRequestsToMe()
-        .then((res) => {
-          // console.log(res.data.requestList);
-          res.data.requestList.sort((a, b) => {
-            if (a.status == 0) return -1;
-            else if (b.status == 0) return 1;
-            else return 0;
-          });
-          this.friendRequests = res.data.requestList;
-        })
-        .catch((error) => console.log(error));
-    },
-    getFriendRequestsFromMe() {
-      this.$http
-        .getFriendRequestsFromMe()
-        .then((res) => {
-          // console.log(res.data.selfRequestList);
-          this.myFriendRequests = res.data.selfRequestList;
-        })
-        .catch((error) => console.log(error));
-    },
-    getGroupRequestsToMe() {
-      this.$http
-        .getGroupRequestsToMe()
-        .then((res) => {
-          // console.log(res.data);
-          res.data.RequestList.sort((a, b) => {
-            if (a.groupEnterRequest.status == 0) return -1;
-            else if (b.groupEnterRequest.status == 0) return 1;
-            else return 0;
-          });
-          this.groupRequests = res.data.RequestList;
-        })
-        .catch((error) => console.log(error));
-    },
-    getGroupRequestsFromMe() {
-      this.$http
-        .getGroupRequestsFromMe()
-        .then((res) => {
-          // console.log(res.data);
-          this.myGroupRequests = res.data.myRequestList;
-        })
-        .catch((error) => console.log(error));
-    },
-    searchUsers() {
-      // console.log("searchUsers");
-      if (this.searchInput == "") return;
-      this.$http
-        .searchUsers(this.searchInput)
-        .then((res) => {
-          // console.log(res.data);
-          if (res.data.user_list) {
-            this.friends = res.data.user_list;
-          } else {
-            this.friends = [];
-          }
-        })
-        .catch((error) => console.log(error));
-    },
-    searchGroups() {
-      console.log("searchGroups");
-      if (this.searchInput == "") return;
-      this.$http
-        .searchGroups(this.searchInput)
+        .getTutorRequestsFromMe()
         .then((res) => {
           console.log(res.data);
-          if (res.data.groups) {
-            this.groups = res.data.groups;
-          } else {
-            this.groups = [];
-          }
+          this.requests = res.data.requestList;
         })
         .catch((error) => console.log(error));
     },
-    switchFriend() {
-      this.holder = "搜索好友";
-      this.header = "好友申请";
-      this.isFriend = true;
+    // 获取申请我当导师的，我是导师
+    getApplications() {
+      this.$http
+        .getTutorRequestsToMe()
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => console.log(error));
     },
-    switchGroup() {
-      this.holder = "搜索群组";
-      this.header = "群组申请";
-      this.isFriend = false;
+    // 通过导师申请，我是导师
+    passTutorRequests(studentId) {
+      this.$http
+        .passTutorRequest(studentId)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => console.log(error));
     },
-    switchTo() {
+    // 拒绝导师申请，我是导师
+    rejectTutorRequests(studentId) {
+      this.$http
+        .rejectTutorRequest(studentId)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => console.log(error));
+    },
+    switchMine() {
       // console.log("我收到的");
       this.toMe = true;
     },
-    switchFrom() {
+    switchHomepage() {
       // console.log("我发出的");
+      if (this.currentTutor == null) return;
       this.toMe = false;
     },
     timeFormatter(time) {
@@ -383,18 +293,16 @@ export default {
           return "出错了";
       }
     },
-    updateAll() {
-      this.getFriendRequestsToMe();
-      this.getFriendRequestsFromMe();
-      this.getGroupRequestsToMe();
-      this.getGroupRequestsFromMe();
-    },
+    updateAll() {},
   },
 
   computed: {
     ...mapState({
       user: (state) => state.user.userInfo,
     }),
+    isTeacher: function () {
+      return this.user.flag == 1;
+    },
   },
 };
 </script>
@@ -480,14 +388,17 @@ export default {
           display: flex;
           justify-content: space-between;
           padding-right: 15px;
-          .name {
-            line-height: 100%;
-          }
-          .lastMessage {
-            color: gray;
-            display: inline-block;
-            overflow: hidden;
-            text-overflow: ellipsis;
+          .tutor-info {
+            .name {
+              line-height: 100%;
+              font-size: 15px;
+            }
+            .major {
+              padding-top: 4px;
+              line-height: 100%;
+              font-size: 10px;
+              color: gray;
+            }
           }
           .status {
             color: gray;
@@ -534,12 +445,17 @@ export default {
         color: gray;
       }
     }
-
+    .homepage-frame {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+    }
     .friend-list {
       width: 100%;
       flex: 1;
       /* height: calc(100% - 45px); */
       overflow-y: auto;
+
       .friend {
         width: 100%;
         height: 65px;
@@ -567,6 +483,12 @@ export default {
             .join {
               color: gray;
               font-size: 14px;
+            }
+            .time {
+              line-height: 100%;
+              color: gray;
+              font-size: 14px;
+              padding-left: 10px;
             }
           }
           .lastMessage {

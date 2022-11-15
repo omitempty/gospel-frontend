@@ -81,7 +81,7 @@
             >
               <router-link
                 style="font-size: 20px"
-                to="#"
+                :to="{ path: 'tutor' }"
                 active-class="active2"
               >
                 <li class="el-icon-message"></li>

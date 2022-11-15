@@ -36,6 +36,11 @@ const router = new VueRouter({
           name: "Search",
           component: () => import("../pages/Search.vue"),
         },
+        {
+          path: "tutor",
+          name: "Tutor",
+          component: () => import("../pages/Tutor.vue"),
+        },
       ],
     },
     {

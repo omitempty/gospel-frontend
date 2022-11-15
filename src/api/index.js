@@ -153,7 +153,45 @@ export default {
   },
 
   // 获取导师列表
-  getTutors(major) {
-    return request.get(`/user/searchTeacher?major=${major}`);
+  getTutors() {
+    return request.get(`/user/searchTeacher`);
+  },
+
+  // 获取我的导师申请, 我是学生
+  getTutorRequestsFromMe() {
+    return request.get("/tutor/getRequestListForStudent");
+  },
+
+  // 获取选我为导师的申请，我是导师
+  getTutorRequestsToMe() {
+    return request.get("/tutor/getRequestList");
+  },
+
+  // 获取我指导的学生，我是导师
+  getMyStudents() {
+    return request.get("/tutor/getStudentList");
+  },
+
+  // 发起申请导师请求，我是学生
+  sendTutorRequest(teacherId) {
+    return request.post("/tutor/sendRequest", {
+      tutorId: teacherId,
+    });
+  },
+
+  // 接受申请导师请求，我是老师
+  passTutorRequest(studentId) {
+    return request.post("/tutor/updateRequest", {
+      flag: 1,
+      userFrom: studentId,
+    });
+  },
+
+  // 拒绝申请导师请求，我是老师
+  rejectTutorRequest(studentId) {
+    return request.post("/tutor/updateRequest", {
+      flag: 2,
+      userFrom: studentId,
+    });
   },
 };
