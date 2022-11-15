@@ -69,4 +69,59 @@ export default {
   getGroupMembers(param) {
     return request.post("/group/getAllMembers", param);
   },
+
+  // 关键词搜索好友
+  searchUsers(keyword) {
+    return request.get(`/user/search/${keyword}`);
+  },
+
+  // 关键词搜索群聊
+  searchGroups(param) {
+    return request.post(`/group/search`, {
+      nameOrNumber: param,
+    });
+  },
+
+  // 查看好友请求列表, 返回所有状态的请求
+  getFriendRequestsToMe() {
+    return request.get("/friend/request/list");
+  },
+
+  // 获取我发送的好友请求
+  getFriendRequestsFromMe() {
+    return request.get("/friend/getSelfRequest");
+  },
+
+  // 获取加群请求
+  getGroupRequestsToMe() {
+    return request.get("/group/get/requestList");
+  },
+
+  // 获取我发送的加群请求
+  getGroupRequestsFromMe() {
+    return request.get("/group/get/myRequest");
+  },
+
+  // 发送好友请求
+  sendFriendRequest(param) {
+    // 原来是路径忘改了...
+    return request.post(`/friend/send`, {
+      sendTime: param.sendTime,
+      userFrom: param.userFrom,
+      userTo: param.userTo,
+    });
+  },
+
+  // 其实只有通过post status一个接口，但是这边封装一下，内部逻辑对视图透明
+  // 通过好友请求
+  passFriendRequest() {
+    return request.get();
+  },
+
+  // 拒绝好友请求
+
+  // 获取导师列表
+  getTutors(major) {
+    return request.get(`/user/searchTeacher?major=${major}`);
+  },
 };

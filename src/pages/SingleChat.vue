@@ -59,7 +59,12 @@
         </div>
         <!-- </div> -->
         <div class="input">
-          <input type="text" v-model="message" placeholder="请输入消息..." />
+          <input
+            @keyup.enter="sendMessage"
+            type="text"
+            v-model="message"
+            placeholder="请输入消息..."
+          />
           <el-button
             type="primary"
             circle
@@ -138,6 +143,17 @@ export default {
       currentFriend: (state) => state.singleMessages.currentFriend,
     }),
   },
+  sockets: {
+    Single_Message: function () {
+      this.$store.dispatch("getFriends");
+      if (this.currentFriend) {
+        this.$store.dispatch("getSingleMessages", {
+          friendId: this.currentFriend.id,
+          myselfId: this.user.id,
+        });
+      }
+    },
+  },
   components: { Empty },
 };
 </script>
@@ -214,9 +230,11 @@ export default {
             align-items: center;
             justify-content: space-between;
             .content {
+              width: 100px;
               color: gray;
               overflow: hidden;
               text-overflow: ellipsis;
+              white-space: nowrap;
               line-height: 100%;
             }
             .time {

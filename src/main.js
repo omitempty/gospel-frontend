@@ -45,5 +45,6 @@ new Vue({
     disconnect() {
       console.log("Socket 断开");
     },
+    Group_Message: function () {},
   },
 }).$mount("#app");
