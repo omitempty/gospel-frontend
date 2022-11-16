@@ -2,6 +2,7 @@ export default {
   state: {
     list: [],
     currentFriend: null,
+    currentPanel: null,
   },
   mutations: {
     setSingleMessages(state, list) {
@@ -15,6 +16,9 @@ export default {
     },
     setCurrentFriend(state, friend) {
       state.currentFriend = friend;
+    },
+    setCurrentPanel(state, panel) {
+      state.currentPanel = panel;
     },
   },
   actions: {
@@ -32,6 +36,12 @@ export default {
       // console.log(friend);
       // 这边名字写错了，平时写代码还是要先想好再写
       commit("setCurrentFriend", friend);
+    },
+    setCurrentPanel({ commit }, panel) {
+      // console.log("========set current panel=======");
+      // console.log(panel);
+      // 这边名字写错了，平时写代码还是要先想好再写
+      commit("setCurrentPanel", panel);
     },
   },
 };

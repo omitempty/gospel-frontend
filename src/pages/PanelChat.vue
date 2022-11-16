@@ -36,42 +36,42 @@
     </div>
     <Empty v-if="!currentFriend"></Empty>
     <div v-else class="showcase">
-        <div class="header">
-          <p>{{ currentFriend.name }}</p>
-        </div>
-        <!-- <div class="chatarea"> -->
-        <div id="msgbox" class="messages">
-          <div
-            class="message"
-            v-for="message in messages"
-            :class="message.userFrom == user?.id ? 'my-message' : ''"
-            :key="message.id"
-          >
-            <div class="avatar">
-              <img :src="message.senderPhoto" />
-            </div>
-            <div class="detail">
-              <p class="content">{{ message.message }}</p>
-            </div>
-            <p class="time">{{ timeFormatter(message.sendTime) }}</p>
+      <div class="header">
+        <p>{{ currentFriend.name }}</p>
+      </div>
+      <!-- <div class="chatarea"> -->
+      <div id="msgbox" class="messages">
+        <div
+          class="message"
+          v-for="message in messages"
+          :class="message.userFrom == user?.id ? 'my-message' : ''"
+          :key="message.id"
+        >
+          <div class="avatar">
+            <img :src="message.senderPhoto" />
           </div>
+          <div class="detail">
+            <p class="content">{{ message.message }}</p>
+          </div>
+          <p class="time">{{ timeFormatter(message.sendTime) }}</p>
         </div>
-        <!-- </div> -->
-        <div class="input">
-          <input
-            @keyup.enter="sendMessage"
-            type="text"
-            v-model="message"
-            placeholder="请输入消息..."
-          />
-          <el-button
-            type="primary"
-            circle
-            size="large"
-            icon="el-icon-s-promotion"
-            @click="sendMessage"
-          ></el-button>
-        </div>
+      </div>
+      <!-- </div> -->
+      <div class="input">
+        <input
+          @keyup.enter="sendMessage"
+          type="text"
+          v-model="message"
+          placeholder="请输入消息..."
+        />
+        <el-button
+          type="primary"
+          circle
+          size="large"
+          icon="el-icon-s-promotion"
+          @click="sendMessage"
+        ></el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -127,7 +127,7 @@ export default {
     },
     setChat(friend) {
       // console.log(friend);
-      this.$store.dispatch("setCurrentFriend", friend);
+      this.$store.dispatch("setCurrentPanel", friend);
       this.$store.dispatch("getSingleMessages", {
         friendId: friend.id,
         myselfId: this.user.id,
@@ -140,7 +140,7 @@ export default {
       friends: (state) => state.panel.list,
       messages: (state) => state.singleMessages.list,
       // 这里写错会直接造成组件渲染失败，但是没有任何报错信息
-      currentFriend: (state) => state.singleMessages.currentFriend,
+      currentFriend: (state) => state.singleMessages.currentPanel,
     }),
   },
   sockets: {
