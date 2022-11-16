@@ -11,7 +11,12 @@
         />
       </div>
       <div v-if="isTeacher" class="friend-list">
-        <div class="friend" v-for="friend in students" :key="friend.id">
+        <div
+          class="friend"
+          v-for="friend in students"
+          :key="friend.id"
+          @click="showStudentHomepage(friend)"
+        >
           <div class="avatar">
             <img :src="friend.photo" />
           </div>
@@ -20,13 +25,39 @@
               <span class="name">{{ friend.name }}</span>
               <span class="major">{{ friend.major }}</span>
             </div>
-            <div class="options">
+            <div class="status" v-if="friend.status != 0">
+              <el-button
+                type="primary"
+                circle
+                plain
+                size="mini"
+                icon="el-icon-plus"
+                @click.stop="sendFriendRequest(friend.id)"
+              ></el-button>
+              <span>{{ mapStatus(friend.status) }}</span>
+            </div>
+            <div v-else class="options">
+              <el-button
+                type="primary"
+                circle
+                plain
+                size="mini"
+                icon="el-icon-plus"
+                @click.stop="sendFriendRequest(friend.id)"
+              ></el-button>
               <el-button
                 type="primary"
                 circle
                 size="mini"
-                icon="el-icon-plus"
-                @click="sendFriendRequest(friend.id)"
+                icon="el-icon-check"
+                @click.stop="passTutorRequest(friend.id)"
+              ></el-button>
+              <el-button
+                type="danger"
+                circle
+                size="mini"
+                icon="el-icon-close"
+                @click.stop="rejectTutorRequest(friend.id)"
               ></el-button>
             </div>
           </div>
@@ -55,14 +86,14 @@
                 circle
                 size="mini"
                 icon="el-icon-plus"
-                @click="sendFriendRequest(friend.id)"
+                @click.stop="sendFriendRequest(friend.id)"
               ></el-button>
               <el-button
                 type="primary"
                 circle
                 size="mini"
                 icon="el-icon-sort"
-                @click="sendTutorRequest(friend.id)"
+                @click.stop="sendTutorRequest(friend.id)"
               ></el-button>
             </div>
           </div>
@@ -79,55 +110,12 @@
         <span @click="switchHomepage">导师主页</span>
       </div>
       <template v-if="isTeacher">
-        <div v-if="toMe" class="friend-list">
-          <div class="friend" v-for="friend in friendRequests" :key="friend.id">
-            <div class="avatar">
-              <img :src="friend.photo" />
-            </div>
-            <div class="detail">
-              <p class="name">{{ friend.name }}</p>
-              <p class="status" v-if="friend.status != 0">
-                {{ mapStatus(friend.status) }}
-              </p>
-              <div v-if="friend.status == 0" class="options">
-                <el-button
-                  type="primary"
-                  circle
-                  size="mini"
-                  icon="el-icon-check"
-                  @click="passFriendRequest(friend.id)"
-                ></el-button>
-                <el-button
-                  type="danger"
-                  circle
-                  size="mini"
-                  icon="el-icon-close"
-                  @click="rejectFriendRequest(friend.id)"
-                ></el-button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else class="friend-list">
-          <div
-            class="friend"
-            v-for="friend in myFriendRequests"
-            :key="friend.id"
-          >
-            <div class="avatar">
-              <img :src="friend.photo" />
-            </div>
-            <div class="detail">
-              <p class="name">{{ friend.name }}</p>
-              <p class="status" v-if="friend.status != 0">
-                {{ mapStatus(friend.status) }}
-              </p>
-              <div v-if="friend.status == 0" class="options">
-                <span class="tobeverified">待验证</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <iframe
+          v-if="currentStudent"
+          class="homepage-frame"
+          :src="currentStudent.profile"
+          frameborder="0"
+        ></iframe>
       </template>
       <template v-else>
         <!-- 我的申请 -->
@@ -171,7 +159,6 @@ export default {
   name: "Tutor",
   data() {
     return {
-      header: "好友申请",
       isFriend: true,
       toMe: true,
       searchInput: "",
@@ -193,12 +180,17 @@ export default {
   created() {
     this.getTeachers();
     this.getRequests();
+    this.getApplications();
   },
   methods: {
     showTutorHomepage(tutor) {
       console.log("click tutor");
       this.currentTutor = tutor;
       this.switchHomepage();
+    },
+    showStudentHomepage(student) {
+      console.log("click student");
+      this.currentStudent = student;
     },
     // handle button click
     getTeachers() {
@@ -211,13 +203,13 @@ export default {
         .catch((error) => console.log(error));
     },
     sendFriendRequest(friendId) {
-      console.log("发送好友请求", friendId);
+      //   console.log("发送好友请求", friendId);
       var param = {
         sendTime: moment().format("yyyy-MM-DD HH:mm:SS"),
         userFrom: this.user.id,
         userTo: friendId,
       };
-      console.log(param);
+      //   console.log(param);
       this.$http
         .sendFriendRequest(param)
         .then(() => {})
@@ -229,6 +221,8 @@ export default {
         .sendTutorRequest(teacherId)
         .then((res) => {
           console.log(res);
+          // update
+          this.getRequests();
         })
         .catch((error) => console.log(error));
     },
@@ -237,7 +231,7 @@ export default {
       this.$http
         .getTutorRequestsFromMe()
         .then((res) => {
-          console.log(res.data);
+          //   console.log(res.data);
           this.requests = res.data.requestList;
         })
         .catch((error) => console.log(error));
@@ -248,24 +242,27 @@ export default {
         .getTutorRequestsToMe()
         .then((res) => {
           console.log(res.data);
+          this.students = res.data.requestList;
         })
         .catch((error) => console.log(error));
     },
     // 通过导师申请，我是导师
-    passTutorRequests(studentId) {
+    passTutorRequest(studentId) {
       this.$http
         .passTutorRequest(studentId)
         .then((res) => {
           console.log(res);
+          this.getApplications();
         })
         .catch((error) => console.log(error));
     },
     // 拒绝导师申请，我是导师
-    rejectTutorRequests(studentId) {
+    rejectTutorRequest(studentId) {
       this.$http
         .rejectTutorRequest(studentId)
         .then((res) => {
           console.log(res);
+          this.getApplications();
         })
         .catch((error) => console.log(error));
     },
@@ -293,7 +290,6 @@ export default {
           return "出错了";
       }
     },
-    updateAll() {},
   },
 
   computed: {
@@ -302,6 +298,13 @@ export default {
     }),
     isTeacher: function () {
       return this.user.flag == 1;
+    },
+    header: function () {
+      if (!this.isTeacher) {
+        return "导师申请";
+      } else {
+        return "学生双选";
+      }
     },
   },
 };
@@ -404,6 +407,10 @@ export default {
             color: gray;
             font-size: 14px;
             line-height: 100%;
+
+            span {
+              padding-left: 5px;
+            }
           }
           .options {
           }
