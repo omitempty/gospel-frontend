@@ -325,7 +325,7 @@ export default {
   .list {
     height: 100%;
     width: 270px;
-    border: solid 2px red;
+    /* border: solid 2px red; */
 
     display: flex;
     flex-direction: column;
@@ -421,13 +421,13 @@ export default {
   .showcase {
     height: 100%;
     flex: 1;
-    border: solid 2px red;
+    /* border: solid 2px red; */
 
     display: flex;
     flex-direction: column;
 
     .header {
-      border: solid 2px black;
+      /* border: solid 2px black; */
       /* background-color: #f5f7f9; */
       background-color: lightblue;
       display: flex;
@@ -438,7 +438,7 @@ export default {
       justify-content: center;
       height: 65px;
     }
-
+    background-color: #fafafa;
     .search-switch {
       width: 100%;
       height: 20px;

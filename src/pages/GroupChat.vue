@@ -34,57 +34,55 @@
         </div>
       </div>
     </div>
-    <div class="showcase">
-      <Empty v-if="!currentGroup"></Empty>
-      <template v-else>
-        <div class="header">
-          <p>{{ currentGroup.groupName }}</p>
-        </div>
-        <div class="members">
-          <div class="member" v-for="member in members" :key="member.id">
-            <div class="avatar">
-              <img :src="member.photo" />
-            </div>
-            <div class="member-info">
-              <p class="name">{{ member.name }}</p>
-              <p class="role" v-if="member.member_type == 'admin'">群主</p>
-            </div>
+    <Empty v-if="!currentGroup"></Empty>
+    <div v-else class="showcase">
+      <div class="header">
+        <p>{{ currentGroup.groupName }}</p>
+      </div>
+      <div class="members">
+        <div class="member" v-for="member in members" :key="member.id">
+          <div class="avatar">
+            <img :src="member.photo" />
+          </div>
+          <div class="member-info">
+            <p class="name">{{ member.name }}</p>
+            <p class="role" v-if="member.member_type == 'admin'">群主</p>
           </div>
         </div>
-        <!-- <div class="chatarea"> -->
-        <div id="msgbox" class="messages">
-          <div
-            class="message"
-            v-for="message in messages"
-            :class="message.userFrom == user?.id ? 'my-message' : ''"
-            :key="message.id"
-          >
-            <div class="avatar">
-              <img :src="message.senderPhoto" />
-            </div>
-            <div class="detail">
-              <p class="content">{{ message.message }}</p>
-            </div>
-            <p class="time">{{ timeFormatter(message.sendTime) }}</p>
+      </div>
+      <!-- <div class="chatarea"> -->
+      <div id="msgbox" class="messages">
+        <div
+          class="message"
+          v-for="message in messages"
+          :class="message.userFrom == user?.id ? 'my-message' : ''"
+          :key="message.id"
+        >
+          <div class="avatar">
+            <img :src="message.senderPhoto" />
           </div>
+          <div class="detail">
+            <p class="content">{{ message.message }}</p>
+          </div>
+          <p class="time">{{ timeFormatter(message.sendTime) }}</p>
         </div>
-        <!-- </div> -->
-        <div class="input">
-          <input
-            @keyup.enter="sendMessage"
-            type="text"
-            v-model="message"
-            placeholder="请输入消息..."
-          />
-          <el-button
-            type="primary"
-            circle
-            size="large"
-            icon="el-icon-s-promotion"
-            @click="sendMessage"
-          ></el-button>
-        </div>
-      </template>
+      </div>
+      <!-- </div> -->
+      <div class="input">
+        <input
+          @keyup.enter="sendMessage"
+          type="text"
+          v-model="message"
+          placeholder="请输入消息..."
+        />
+        <el-button
+          type="primary"
+          circle
+          size="large"
+          icon="el-icon-s-promotion"
+          @click="sendMessage"
+        ></el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -201,7 +199,7 @@ export default {
   .list {
     height: 100%;
     width: 270px;
-    border: solid 2px red;
+    /* border: solid 2px red; */
 
     display: flex;
     flex-direction: column;
@@ -282,13 +280,13 @@ export default {
     position: relative;
     height: 100%;
     flex: 1;
-    border: solid 2px red;
+    /* border: solid 2px red; */
 
     display: flex;
     flex-direction: column;
 
     .header {
-      border: solid 2px black;
+      /* border: solid 2px black; */
       /* background-color: #f5f7f9; */
       background-color: lightblue;
       display: flex;
@@ -301,7 +299,7 @@ export default {
     }
 
     .members {
-      border: 2px dashed black;
+      border-left: solid 2px lightgray;
       width: 20%;
       height: calc(100% - 185px);
       position: absolute;
@@ -338,7 +336,7 @@ export default {
     .messages {
       flex: 1;
       width: 80%;
-      border: solid 2px blue;
+      /* border: solid 2px blue; */
       overflow-y: auto;
 
       .message {
@@ -377,12 +375,12 @@ export default {
         }
       }
     }
-
+    background-color: #f5f7f9;
     .input {
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(241, 237, 237, 0.4);
       border-radius: 24px;
       margin: 10px;
       padding: 0 30px;

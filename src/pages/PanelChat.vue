@@ -34,9 +34,8 @@
         </div>
       </div>
     </div>
-    <div class="showcase">
-      <Empty v-if="!currentFriend"></Empty>
-      <template v-else>
+    <Empty v-if="!currentFriend"></Empty>
+    <div v-else class="showcase">
         <div class="header">
           <p>{{ currentFriend.name }}</p>
         </div>
@@ -73,7 +72,6 @@
             @click="sendMessage"
           ></el-button>
         </div>
-      </template>
     </div>
   </div>
 </template>
@@ -177,7 +175,7 @@ export default {
   .list {
     height: 100%;
     width: 270px;
-    border: solid 2px red;
+    /* border: solid 2px red; */
 
     display: flex;
     flex-direction: column;
@@ -256,13 +254,13 @@ export default {
   .showcase {
     height: 100%;
     flex: 1;
-    border: solid 2px red;
+    /* border: solid 2px red; */
 
     display: flex;
     flex-direction: column;
 
     .header {
-      border: solid 2px black;
+      /* border: solid 2px black; */
       /* background-color: #f5f7f9; */
       background-color: lightblue;
       display: flex;
@@ -277,7 +275,7 @@ export default {
     .messages {
       flex: 1;
       width: 100%;
-      border: solid 2px blue;
+      /* border: solid 2px blue; */
       overflow-y: auto;
 
       .message {
@@ -316,12 +314,12 @@ export default {
         }
       }
     }
-
+    background-color: #f5f7f9;
     .input {
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(241, 237, 237, 0.4);
       border-radius: 24px;
       margin: 10px;
       padding: 0 30px;

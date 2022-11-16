@@ -176,10 +176,11 @@ a:hover::before {
 
 .bodyOfManage {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #f5f7f9;
 }
 
 .leftNavbar {
