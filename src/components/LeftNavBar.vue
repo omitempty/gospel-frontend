@@ -6,19 +6,11 @@
         <el-tooltip
           class="item"
           effect="dark"
-          content="个人中心"
+          :content="user.name"
           placement="bottom"
         >
-          <img
-            v-if="user.adurl"
-            :src="user.adurl"
-            @click="personalCenterApper"
-          />
-          <img
-            v-if="!user.adurl"
-            src="../assets/logo.png"
-            @click="personalCenterApper"
-          />
+          <img v-if="user" :src="user.photo" @click="personalCenterApper" />
+          <img v-else src="../assets/logo.png" @click="personalCenterApper" />
         </el-tooltip>
       </div>
       <!--  导航栏区-->
@@ -57,6 +49,20 @@
                 active-class="active2"
               >
                 <li class="el-icon-user"></li>
+              </router-link>
+            </el-tooltip>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="小组"
+              placement="right"
+            >
+              <router-link
+                style="font-size: 20px"
+                :to="{ path: 'panelchat' }"
+                active-class="active2"
+              >
+                <li class="el-icon-sort"></li>
               </router-link>
             </el-tooltip>
             <el-tooltip
@@ -102,15 +108,18 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 // import "animate.css";
 export default {
   name: "LeftNavBar",
+  created() {
+    console.log(this.user);
+  },
   data() {
     return {
       withOfIconType: "100px",
       flagOfShow: true,
       flagOfPersonalCenter: true,
-      user: {},
     };
   },
   methods: {
@@ -124,8 +133,11 @@ export default {
     },
   },
 
-  mounted() {},
-  beforeDestroy() {},
+  computed: {
+    ...mapState({
+      user: (state) => state.user.userInfo,
+    }),
+  },
 };
 </script>
 
@@ -207,7 +219,7 @@ a:hover::before {
 }
 
 .profileArea img {
-  border-radius: 10px;
+  border-radius: 50%;
   width: 50px;
   height: 50px;
 }

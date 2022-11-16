@@ -6,6 +6,7 @@ import friends from "./modules/friend";
 import groups from "./modules/groups";
 import singleMessages from "./modules/singleMessages";
 import groupMessages from "./modules/groupMessages";
+import panel from "./modules/panel";
 
 Vue.use(Vuex);
 
@@ -16,5 +17,6 @@ export default new Vuex.Store({
     groups,
     singleMessages,
     groupMessages,
+    panel,
   },
 });

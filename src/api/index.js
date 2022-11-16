@@ -194,4 +194,9 @@ export default {
       userFrom: studentId,
     });
   },
+
+  // 获取双选的相关人
+  getTeacherAndPeers() {
+    return request.get("/tutor/getTeacherAndPeers");
+  },
 };

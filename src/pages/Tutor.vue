@@ -303,7 +303,7 @@ export default {
       if (!this.isTeacher) {
         return "导师申请";
       } else {
-        return "学生双选";
+        return "学生详情";
       }
     },
   },

@@ -32,6 +32,11 @@ const router = new VueRouter({
           component: () => import("../pages/GroupChat.vue"),
         },
         {
+          path: "panelchat",
+          name: "PanelChat",
+          component: () => import("../pages/PanelChat.vue"),
+        },
+        {
           path: "search",
           name: "Search",
           component: () => import("../pages/Search.vue"),
