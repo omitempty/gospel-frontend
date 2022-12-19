@@ -24,6 +24,7 @@ export default {
       // 如果后端字段改了，一个中间层是很有必要的，我可以在中间层做转换对前端屏蔽修改
       let list = res.data.FriendsAndLastMessage.map((item) => {
         return {
+          friendType: item.friendType,
           ...item.friend,
           lastMessage: item.singleMessage,
         };

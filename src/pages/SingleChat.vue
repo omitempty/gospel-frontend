@@ -17,7 +17,13 @@
             <img :src="friend.photo" />
           </div>
           <div class="detail">
-            <p class="name">{{ friend.name }}</p>
+            <p class="name">
+              {{
+                friend.friendType == 0
+                  ? friend.name + "[临时会话]"
+                  : friend.name
+              }}
+            </p>
             <div class="lastMessage">
               <p class="content">
                 {{ friend.lastMessage ? friend.lastMessage.message : "" }}
@@ -97,6 +103,16 @@ export default {
     },
     sendMessage() {
       console.log(this.message);
+      // check for temporary dialog
+      var msgFromMe = this.messages.filter(
+        (msg) => msg.userFrom == this.user.id
+      );
+
+      if (msgFromMe.length >= 3) {
+        this.$message("临时会话只能发送3条消息，请添加好友后继续对话");
+        return;
+      }
+
       // test
       this.$socket.emit(
         "Single_Message",

@@ -51,7 +51,7 @@
                 <li class="el-icon-user"></li>
               </router-link>
             </el-tooltip>
-            <!-- <el-tooltip
+            <el-tooltip
               class="item"
               effect="dark"
               content="小组"
@@ -64,7 +64,7 @@
               >
                 <li class="el-icon-sort"></li>
               </router-link>
-            </el-tooltip> -->
+            </el-tooltip>
             <el-tooltip
               class="item"
               effect="dark"
