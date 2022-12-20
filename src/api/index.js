@@ -199,4 +199,9 @@ export default {
   getTeacherAndPeers() {
     return request.get("/tutor/getTeacherAndPeers");
   },
+
+  // 发起临时会话
+  makeTempMessage(param) {
+    return request.post("/friend/createTemporary", param);
+  },
 };

@@ -29,6 +29,13 @@
                 type="primary"
                 circle
                 size="mini"
+                icon="el-icon-chat-round"
+                @click="sendTempMessage(friend)"
+              ></el-button>
+              <el-button
+                type="primary"
+                circle
+                size="mini"
                 icon="el-icon-plus"
                 @click="sendFriendRequest(friend.id)"
               ></el-button>
@@ -214,7 +221,10 @@ export default {
         .then(() => {
           this.getFriendRequestsToMe();
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          this.getFriendRequestsToMe();
+        });
     },
 
     rejectFriendRequest(friendId) {
@@ -226,7 +236,29 @@ export default {
         })
         .catch((error) => console.log(error));
     },
+    sendTempMessage(friend) {
+      var param = {
+        userFrom: this.user.id,
+        userTo: friend.id,
+      };
+      this.$http.makeTempMessage(param).then((res) => {
+        console.log(res.code);
+        if (res.code == 200) {
+          this.$store.dispatch("getFriends");
+          this.$store.dispatch("setCurrentFriend", friend);
+          this.$store.dispatch("getSingleMessages", {
+            friendId: friend.id,
+            myselfId: this.user.id,
+          });
 
+          this.$nextTick(() => {
+            this.$router.push("/home");
+          });
+        } else {
+          this.$message("会话已存在");
+        }
+      });
+    },
     sendFriendRequest(friendId) {
       console.log("发送好友请求", friendId);
       var param = {
@@ -326,7 +358,7 @@ export default {
       this.$http
         .searchUsers(this.searchInput)
         .then((res) => {
-          // console.log(res.data);
+          console.log(res.data);
           if (res.data.user_list) {
             this.friends = res.data.user_list;
           } else {
@@ -394,6 +426,7 @@ export default {
   computed: {
     ...mapState({
       user: (state) => state.user.userInfo,
+      storefriends: (state) => state.friends.list,
     }),
   },
 };
